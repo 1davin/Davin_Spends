@@ -3,4 +3,11 @@
     <string name="app_name">Spends</string>
     <string name="info">Info</string>
     <string name="back">Kemabali</string>
+    <string name="list_empty">List kosong</string>
+    <string name="x_clicked">%1$s diklik!</string>
+    <string name="add_note">Tambah catatan</string>
+    <string name="title">Judul</string>
+    <string name="note">Catatan</string>
+    <string name="edit_note">Edit Catatan</string>
+    <string name="save">Simpan</string>
 </resources>
