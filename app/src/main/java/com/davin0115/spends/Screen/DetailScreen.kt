@@ -145,8 +145,6 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         if (id != null) {
                             DeleteAction {
                                 showDialog = true
-                                viewModel.delete(id)
-                                navController.popBackStack()
                             }
                         }
                     }
