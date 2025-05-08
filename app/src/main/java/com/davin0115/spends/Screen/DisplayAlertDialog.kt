@@ -26,7 +26,7 @@ fun DisplayAlertDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = { onDismissRequest }) {
+            TextButton(onClick = { onDismissRequest() }) {
                 Text(
                     text = stringResource(R.string.cancel_button),
                     fontFamily = poppinsFamily)

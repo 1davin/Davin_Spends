@@ -191,7 +191,7 @@ fun GridItem(catatan: Catatan, onClick: () -> Unit){
             )
             Text(
                 text = catatan.catatan,
-                maxLines = 4,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(text = catatan.tanggal)
