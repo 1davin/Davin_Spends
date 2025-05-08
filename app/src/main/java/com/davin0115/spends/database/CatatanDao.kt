@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.davin0115.spends.model.Barang
 import com.davin0115.spends.model.Catatan
 import kotlinx.coroutines.flow.Flow
 
@@ -24,4 +25,21 @@ interface CatatanDao {
 
     @Query("DELETE FROM catatan WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    // Insert barang
+    @Insert
+    suspend fun insertBarang(barang: Barang)
+
+    // Update barang
+    @Update
+    suspend fun updateBarang(barang: Barang)
+
+    // Delete semua barang untuk catatan tertentu (optional)
+    @Query("DELETE FROM barang WHERE catatanId = :catatanId")
+    suspend fun deleteBarangByCatatanId(catatanId: Long)
+
+    // Get semua barang berdasarkan catatanId
+    @Query("SELECT * FROM barang WHERE catatanId = :catatanId")
+    suspend fun getBarangByCatatanId(catatanId: Long): List<Barang>
+
 }

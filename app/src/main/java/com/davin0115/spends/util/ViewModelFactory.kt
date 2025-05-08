@@ -7,17 +7,19 @@ import com.davin0115.spends.Screen.DetailViewModel
 import com.davin0115.spends.Screen.MainViewModel
 import com.davin0115.spends.database.CatatanDb
 
-class ViewModelFactory (
+class ViewModelFactory(
     private val context: Context
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val dao = CatatanDb.getInstance(context).dao
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(dao) as T
-        } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            return DetailViewModel(dao) as T
+        return when {
+            modelClass.isAssignableFrom(MainViewModel::class.java) ->
+                MainViewModel(dao) as T
+            modelClass.isAssignableFrom(DetailViewModel::class.java) ->
+                DetailViewModel(dao) as T
+            else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+
