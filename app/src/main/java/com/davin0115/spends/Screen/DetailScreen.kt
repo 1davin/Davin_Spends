@@ -4,20 +4,21 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -36,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -43,14 +45,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.davin0115.spends.R
-import com.davin0115.spends.model.Barang
 import com.davin0115.spends.model.BarangInput
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
+import com.davin0115.spends.ui.theme.SpendsTheme
 import com.davin0115.spends.ui.theme.poppinsFamily
 import com.davin0115.spends.util.ViewModelFactory
 
@@ -63,7 +67,6 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
     val factory = ViewModelFactory(context)
     val viewModel: DetailViewModel = viewModel(factory = factory)
     val barangList = remember { mutableStateListOf(BarangInput()) }
-    val barangToDelete = remember { mutableStateListOf<Barang>() } // Menyimpan barang yang dihapus
 
     var judul by remember { mutableStateOf("") }
     var catatan by remember { mutableStateOf("") }
@@ -198,14 +201,13 @@ fun FormCatatan(
     onHapusBarang: (Int) -> Unit,
     modifier: Modifier
 ) {
-
-    barangList.forEachIndexed { index, barang ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
             OutlinedTextField(
                 value = title,
                 onValueChange = { onTitleChange(it) },
@@ -217,77 +219,107 @@ fun FormCatatan(
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        item {
             OutlinedTextField(
                 value = desc,
                 onValueChange = { onDescChange(it) },
                 label = { Text(text = stringResource(R.string.note), fontFamily = poppinsFamily) },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        item {
             Text(
-                stringResource(R.string.item_list),
+                text = stringResource(R.string.item_list),
                 fontFamily = poppinsFamily,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold
             )
+        }
 
-            barangList.forEachIndexed { index, barang ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    OutlinedTextField(
-                        value = barang.nama,
-                        onValueChange = {
-                            onBarangChange(index, barang.copy(nama = it))
-                        },
-                        label = {
-                            Text(
-                                stringResource(R.string.item_name),
-                                fontFamily = poppinsFamily
-                            )
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp)
-                    )
-                    OutlinedTextField(
-                        value = barang.harga,
-                        onValueChange = {
-                            onBarangChange(index, barang.copy(harga = it))
-                        },
-                        label = {
-                            Text(
-                                stringResource(R.string.price),
-                                fontFamily = poppinsFamily
-                            )
-                        },
-                        modifier = Modifier.width(100.dp)
-                    )
-                    IconButton(
-                        onClick = { onHapusBarang(index) }
+        itemsIndexed(barangList) { index, barang ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = barang.nama,
+                    onValueChange = {
+                        onBarangChange(index, barang.copy(nama = it))
+                    },
+                    label = { Text(stringResource(R.string.item_name), fontFamily = poppinsFamily) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+                OutlinedTextField(
+                    value = barang.harga,
+                    onValueChange = {
+                        onBarangChange(index, barang.copy(harga = it))
+                    },
+                    label = { Text(stringResource(R.string.price), fontFamily = poppinsFamily) },
+                    modifier = Modifier.width(100.dp)
+                )
 
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.delete)
-                        )
-                    }
+                IconButton(onClick = { onHapusBarang(index) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(R.string.delete)
+                    )
                 }
             }
+        }
 
-            Button(
-                onClick = onTambahBarang,
-                modifier = Modifier.align(Alignment.End)
+        item {
+            val totalHarga = barangList.sumOf {
+                it.harga.toIntOrNull() ?: 0
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(
+                        color = SecondColor
+                    ),
+                horizontalArrangement = Arrangement.Start,
             ) {
-                Text(stringResource(R.string.add_item), fontFamily = poppinsFamily)
+                Text(
+                    modifier = Modifier
+                        .padding(10.dp),
+                    color = Color.White,
+                    text = stringResource(R.string.total_price, totalHarga),
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+
+
+        item {
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SecondColor,        // Warna latar tombol
+                    contentColor = Color.White         // Warna teks/icon tombol
+                ),
+                onClick = onTambahBarang,
+            ) {
+                Text(text = stringResource(R.string.add_item), fontFamily = poppinsFamily)
             }
         }
     }
 }
 
-
+@Preview
+@Composable
+fun DetailScreenPreview ()
+{
+    SpendsTheme {
+        DetailScreen(rememberNavController())
+    }
+}
 
 @Composable
 fun DeleteAction(delete: () -> Unit) {

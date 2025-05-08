@@ -16,7 +16,6 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
 
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
 
-    // Fungsi untuk menyimpan catatan baru
     fun insert(judul: String, isi: String) {
         val catatan = Catatan(
             tanggal = formatter.format(Date()),

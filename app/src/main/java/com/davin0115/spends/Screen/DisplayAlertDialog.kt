@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.davin0115.spends.R
-import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.poppinsFamily
 
 
