@@ -17,4 +17,7 @@
     <string name="item_list">List barang</string>
     <string name="item_name">Nama barang</string>
     <string name="price">Harga</string>
+    <string name="delete_button">Tombol Hapus</string>
+    <string name="cancel_button">Tombol Batal</string>
+    <string name="delete_message">Pesan Hapus</string>
 </resources>
