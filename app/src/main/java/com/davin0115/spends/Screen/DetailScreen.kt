@@ -229,7 +229,7 @@ fun FormCatatan(
             Text(
                 stringResource(R.string.item_list),
                 fontFamily = poppinsFamily,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
 
             barangList.forEachIndexed { index, barang ->
