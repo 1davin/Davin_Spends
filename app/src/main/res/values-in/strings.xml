@@ -17,7 +17,7 @@
     <string name="item_list">List barang</string>
     <string name="item_name">Nama barang</string>
     <string name="price">Harga</string>
-    <string name="total_price">Total harga:  %1$d</string>
+    <string name="total_price">Total harga:  Rp. %1$d</string>
     <string name="delete_button">Hapus</string>
     <string name="cancel_button">Batal</string>
     <string name="delete_message">Hapus ini?</string>

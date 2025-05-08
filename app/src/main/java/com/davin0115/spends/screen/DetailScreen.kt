@@ -1,14 +1,16 @@
-package com.davin0115.spends.Screen
+package com.davin0115.spends.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,8 +18,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -288,7 +293,7 @@ fun FormCatatan(
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(10.dp),
+                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     color = Color.White,
                     text = stringResource(R.string.total_price, totalHarga),
                     fontFamily = poppinsFamily,
@@ -297,27 +302,24 @@ fun FormCatatan(
             }
         }
 
-
         item {
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = SecondColor,        // Warna latar tombol
-                    contentColor = Color.White         // Warna teks/icon tombol
-                ),
-                onClick = onTambahBarang,
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.add_item), fontFamily = poppinsFamily)
+                IconButton(
+                    onClick = onTambahBarang ,
+                    modifier = Modifier.size(65.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Edit",
+                        tint = Color.LightGray,
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun DetailScreenPreview ()
-{
-    SpendsTheme {
-        DetailScreen(rememberNavController())
     }
 }
 

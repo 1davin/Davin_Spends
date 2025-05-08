@@ -7,9 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.davin0115.spends.Screen.DetailScreen
-import com.davin0115.spends.Screen.KEY_ID_CATATAN
-import com.davin0115.spends.Screen.MainScreen
+import com.davin0115.spends.screen.DetailScreen
+import com.davin0115.spends.screen.KEY_ID_CATATAN
+import com.davin0115.spends.screen.MainScreen
 
 @Composable
 fun SetUpNavGraph(navController: NavHostController = rememberNavController()) {

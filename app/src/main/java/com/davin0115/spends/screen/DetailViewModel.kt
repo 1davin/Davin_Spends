@@ -1,4 +1,4 @@
-package com.davin0115.spends.Screen
+package com.davin0115.spends.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,23 +16,11 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
 
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
 
-    fun insert(judul: String, isi: String) {
-        val catatan = Catatan(
-            tanggal = formatter.format(Date()),
-            judul = judul,
-            catatan = isi
-        )
-
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.insert(catatan)
-        }
-    }
-
     fun insertWithBarangList(judul: String, isi: String, barangList: List<BarangInput>) {
         val catatan = Catatan(
             tanggal = formatter.format(Date()),
             judul = judul,
-            catatan = isi // ← langsung dari input user
+            catatan = isi
         )
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,12 +36,10 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
         }
     }
 
-    // Fungsi untuk mengambil catatan berdasarkan ID
     suspend fun getCatatan(id: Long): Catatan? {
         return dao.getCatatanById(id)
     }
 
-    // Fungsi untuk update catatan dan barang
     fun update(id: Long, judul: String, isi: String, barangList: List<BarangInput>) {
         val catatan = Catatan(
             id = id,
@@ -63,13 +49,10 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            // Update catatan
             dao.update(catatan)
 
-            // Hapus barang yang lama
             dao.deleteBarangByCatatanId(id)
 
-            // Insert barang yang baru
             val barangToInsert = barangList.map {
                 Barang(
                     catatanId = id,
@@ -78,25 +61,14 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
                 )
             }
 
-            // Insert barang menggunakan insertBarang (bukan insertBarangList)
             barangToInsert.forEach { dao.insertBarang(it) }
         }
     }
-
-    // Fungsi untuk menghapus catatan
     fun delete(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             dao.deleteById(id)
         }
     }
-
-    fun deleteBarang(barang: Barang) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.deleteBarang(barang)
-        }
-    }
-
-    // Fungsi untuk mendapatkan barang berdasarkan catatanId
     suspend fun getBarangList(catatanId: Long): List<Barang> {
         return dao.getBarangByCatatanId(catatanId)
     }

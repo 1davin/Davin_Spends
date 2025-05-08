@@ -1,4 +1,4 @@
-package com.davin0115.spends.Screen
+package com.davin0115.spends.screen
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -16,7 +16,7 @@ fun DisplayAlertDialog(
     onConfirmation: () -> Unit
 ) {
     AlertDialog(
-        text = { Text (text = stringResource(R.string.delete_message),) },
+        text = { Text (text = stringResource(R.string.delete_message)) },
         confirmButton = {
             TextButton(onClick = { onConfirmation() }) {
                 Text(

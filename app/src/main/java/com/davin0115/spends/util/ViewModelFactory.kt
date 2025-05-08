@@ -3,8 +3,8 @@ package com.davin0115.spends.util
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.davin0115.spends.Screen.DetailViewModel
-import com.davin0115.spends.Screen.MainViewModel
+import com.davin0115.spends.screen.DetailViewModel
+import com.davin0115.spends.screen.MainViewModel
 import com.davin0115.spends.database.CatatanDb
 
 class ViewModelFactory(

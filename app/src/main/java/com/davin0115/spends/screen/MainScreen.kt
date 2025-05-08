@@ -1,4 +1,4 @@
-package com.davin0115.spends.Screen
+package com.davin0115.spends.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -70,7 +70,6 @@ fun MainScreen(navController: NavHostController) {
     Scaffold (
         topBar = {
             GradientTopBarInfo(
-                navController = navController,
                 title = stringResource(id = R.string.app_name),
                 showList = showList,
                 dataStore = dataStore
@@ -202,7 +201,6 @@ fun GridItem(catatan: Catatan, onClick: () -> Unit){
 
 @Composable
 fun GradientTopBarInfo(
-    navController: NavHostController,
     title: String,
     showList: Boolean,
     dataStore: SettingsDataStore,
@@ -241,7 +239,6 @@ fun GradientTopBarInfo(
                 fontSize = 20.sp
             )
 
-            // Actions di sisi kanan
             Row {
                 IconButton(onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
@@ -256,7 +253,7 @@ fun GradientTopBarInfo(
                         contentDescription = stringResource(
                             if (showList) R.string.grid else R.string.list
                         ),
-                        tint = Color.White // bisa diganti sesuai tema
+                        tint = Color.White
                     )
                 }
             }

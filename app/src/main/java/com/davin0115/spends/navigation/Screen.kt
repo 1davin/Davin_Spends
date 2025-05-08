@@ -1,6 +1,6 @@
 package com.davin0115.spends.navigation
 
-import com.davin0115.spends.Screen.KEY_ID_CATATAN
+import com.davin0115.spends.screen.KEY_ID_CATATAN
 
 sealed class Screen (val route: String){
     data object Home: Screen("mainScreen")

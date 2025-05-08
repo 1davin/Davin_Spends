@@ -1,4 +1,4 @@
-package com.davin0115.spends.Screen
+package com.davin0115.spends.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

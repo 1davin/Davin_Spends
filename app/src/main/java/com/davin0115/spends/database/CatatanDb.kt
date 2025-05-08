@@ -15,7 +15,7 @@ import com.davin0115.spends.model.Catatan
 abstract class CatatanDb : RoomDatabase() {
 
     abstract val dao: CatatanDao
-    abstract val barangDao: BarangDao  // Tambahkan ini
+    abstract val barangDao: BarangDao
 
     companion object {
         @Volatile
@@ -30,7 +30,7 @@ abstract class CatatanDb : RoomDatabase() {
                         CatatanDb::class.java,
                         "catatan.db"
                     )
-                        .fallbackToDestructiveMigration() // penting
+                        .fallbackToDestructiveMigration()
                         .build()
                     INSTANCE = instance
                 }

@@ -9,14 +9,14 @@
     <string name="note">Note</string>
     <string name="edit_note">Edit note</string>
     <string name="save">Save</string>
-    <string name="invalid">Title and note cant be empty</string>
+    <string name="invalid">Title and note cannot be empty</string>
     <string name="delete">Delete</string>
     <string name="more">More</string>
     <string name="add_item">Add item</string>
     <string name="item_list">Item list</string>
     <string name="item_name">Item name</string>
     <string name="price">Price</string>
-    <string name="total_price">Total price: %1$d</string>
+    <string name="total_price">Total price: Rp. %1$d</string>
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
     <string name="delete_message">Delete this?</string>
