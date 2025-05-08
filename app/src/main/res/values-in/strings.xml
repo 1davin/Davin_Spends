@@ -10,4 +10,7 @@
     <string name="note">Catatan</string>
     <string name="edit_note">Edit Catatan</string>
     <string name="save">Simpan</string>
+    <string name="invalid">Judul dan catatan tidak boleh kosong</string>
+    <string name="delete">Hapus</string>
+    <string name="more">Lainnya</string>
 </resources>

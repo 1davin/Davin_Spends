@@ -1,7 +1,5 @@
 package com.davin0115.spends.Screen
 
-import android.R.attr.id
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,21 +17,17 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -46,26 +40,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.davin0115.spends.R
 import com.davin0115.spends.model.Catatan
 import com.davin0115.spends.navigation.Screen
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
 import com.davin0115.spends.ui.theme.poppinsFamily
-import com.davin0115.spends.R
+import com.davin0115.spends.util.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
     Scaffold (
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.app_name))
-                },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                )
+            GradientTopBarInfo(
+                navController = navController,
+                title = stringResource(id = R.string.app_name)
             )
         },
         floatingActionButton = {
@@ -77,7 +67,7 @@ fun MainScreen(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = stringResource(R.string.add_note),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = Color.White
                 )
             }
         }
@@ -88,9 +78,10 @@ fun MainScreen(navController: NavHostController) {
 
 @Composable
 fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val viewModel: MainViewModel = viewModel()
-    val data = viewModel.data
     val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel: MainViewModel = viewModel(factory = factory)
+    val data by viewModel.data.collectAsState()
 
     if (data.isEmpty()) {
         Column (
@@ -140,5 +131,47 @@ fun ListItem(catatan: Catatan, onClick: () -> Unit) {
             text = catatan.tanggal,
             fontFamily = poppinsFamily
         )
+    }
+}
+
+@Composable
+fun GradientTopBarInfo(
+    navController: NavHostController,
+    title: String,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(112.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MainColor,
+                        SecondColor
+                    )
+                )
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = WindowInsets.statusBars
+                        .asPaddingValues()
+                        .calculateTopPadding(),
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp
+            )
+        }
     }
 }

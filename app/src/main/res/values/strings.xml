@@ -9,4 +9,7 @@
     <string name="note">Note</string>
     <string name="edit_note">Edit note</string>
     <string name="save">Save</string>
+    <string name="invalid">Title and note cant be empty</string>
+    <string name="delete">Delete</string>
+    <string name="more">More</string>
 </resources>
