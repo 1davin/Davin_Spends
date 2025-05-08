@@ -12,4 +12,8 @@
     <string name="invalid">Title and note cant be empty</string>
     <string name="delete">Delete</string>
     <string name="more">More</string>
+    <string name="add_item">Add item</string>
+    <string name="item_list">Item list</string>
+    <string name="item_name">Item name</string>
+    <string name="price">Price</string>
 </resources>

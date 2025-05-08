@@ -219,7 +219,7 @@ fun FormCatatan(
 
         // Input barang dinamis
         Text(
-            "Daftar Barang",
+            stringResource(R.string.item_list),
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold
             )
@@ -236,7 +236,7 @@ fun FormCatatan(
                     },
                     label = {
                         Text(
-                            "Nama Barang",
+                            stringResource(R.string.item_name),
                             fontFamily = poppinsFamily
                         ) },
                     modifier = Modifier
@@ -248,8 +248,10 @@ fun FormCatatan(
                     onValueChange = {
                         onBarangChange(index, barang.copy(harga = it))
                     },
-                    label = { Text("Harga",
-                        fontFamily = poppinsFamily
+                    label = {
+                        Text(
+                            stringResource(R.string.price),
+                            fontFamily = poppinsFamily
                     ) },
                     modifier = Modifier.width(100.dp)
                 )
@@ -263,7 +265,7 @@ fun FormCatatan(
                 .align(Alignment.End)
         ) {
             Text(
-                "Tambah Barang",
+                stringResource(R.string.add_item),
                 fontFamily = poppinsFamily
             )
         }

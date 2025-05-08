@@ -13,4 +13,8 @@
     <string name="invalid">Judul dan catatan tidak boleh kosong</string>
     <string name="delete">Hapus</string>
     <string name="more">Lainnya</string>
+    <string name="add_item">Tambah barang</string>
+    <string name="item_list">List barang</string>
+    <string name="item_name">Nama barang</string>
+    <string name="price">Harga</string>
 </resources>
