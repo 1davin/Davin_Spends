@@ -91,6 +91,12 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
         }
     }
 
+    fun deleteBarang(barang: Barang) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.deleteBarang(barang)
+        }
+    }
+
     // Fungsi untuk mendapatkan barang berdasarkan catatanId
     suspend fun getBarangList(catatanId: Long): List<Barang> {
         return dao.getBarangByCatatanId(catatanId)

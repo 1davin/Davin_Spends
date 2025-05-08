@@ -62,7 +62,9 @@ fun MainScreen(navController: NavHostController) {
             FloatingActionButton(
                 onClick = {
                     navController.navigate(Screen.FormBaru.route)
-                }
+                },
+                containerColor = SecondColor,
+                contentColor = Color.White
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,

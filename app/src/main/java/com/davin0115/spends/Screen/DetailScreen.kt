@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -111,6 +112,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                                 stringResource(id = R.string.add_note)
                             else
                                 stringResource(id = R.string.edit_note),
+                            fontFamily = poppinsFamily,
                             color = Color.White,
                             style = MaterialTheme.typography.titleLarge
                         )
@@ -151,7 +153,6 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
         }
 
     ) { padding ->
-
         FormCatatan(
             title = judul,
             onTitleChange = { judul = it },
@@ -160,9 +161,20 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             barangList = barangList,
             onBarangChange = { index, barang -> barangList[index] = barang },
             onTambahBarang = { barangList.add(BarangInput()) },
+            onHapusBarang = { index ->
+                if (barangList.size > 1) {
+                    barangList.removeAt(index)
+                } else {
+                    val barang = barangList[0]
+                    if (barang.nama.isNotBlank() || barang.harga.isNotBlank()) {
+                        barangList.removeAt(0)
+                    } else {
+                        Toast.makeText(context, "Minimal 1 item harus ada.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            },
             modifier = Modifier.padding(padding)
         )
-
     }
 }
 
@@ -175,104 +187,98 @@ fun FormCatatan(
     barangList: SnapshotStateList<BarangInput>,
     onBarangChange: (Int, BarangInput) -> Unit,
     onTambahBarang: () -> Unit,
+    onHapusBarang: (Int) -> Unit,
     modifier: Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        OutlinedTextField(
-            value = title,
-            onValueChange = { onTitleChange(it) },
-            label = { Text(
-                text = stringResource(R.string.title),
-                fontFamily = poppinsFamily) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = desc,
-            onValueChange = { onDescChange(it) },
-            label = {
-                Text(
-                    text = stringResource(R.string.note),
-                    fontFamily = poppinsFamily) },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Sentences
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        // Input barang dinamis
-        Text(
-            stringResource(R.string.item_list),
-            fontFamily = poppinsFamily,
-            fontWeight = FontWeight.Bold
-            )
-
-        barangList.forEachIndexed { index, barang ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = barang.nama,
-                    onValueChange = {
-                        onBarangChange(index, barang.copy(nama = it))
-                    },
-                    label = {
-                        Text(
-                            stringResource(R.string.item_name),
-                            fontFamily = poppinsFamily
-                        ) },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 8.dp)
-                )
-                OutlinedTextField(
-                    value = barang.harga,
-                    onValueChange = {
-                        onBarangChange(index, barang.copy(harga = it))
-                    },
-                    label = {
-                        Text(
-                            stringResource(R.string.price),
-                            fontFamily = poppinsFamily
-                    ) },
-                    modifier = Modifier.width(100.dp)
-                )
-            }
-        }
-
-        val totalHarga = barangList.sumOf { it.harga.toIntOrNull() ?: 0 }
-        Text(
-            text = "Total: Rp$totalHarga",
-            fontWeight = FontWeight.Bold,
-            fontFamily = poppinsFamily,
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(top = 8.dp)
-        )
-
-        // Tombol tambah barang
-        Button(
-            onClick = onTambahBarang,
-            modifier = Modifier
-                .align(Alignment.End)
+    barangList.forEachIndexed { index, barang ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                stringResource(R.string.add_item),
-                fontFamily = poppinsFamily
+            OutlinedTextField(
+                value = title,
+                onValueChange = { onTitleChange(it) },
+                label = { Text(text = stringResource(R.string.title), fontFamily = poppinsFamily) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    imeAction = ImeAction.Next
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
+            OutlinedTextField(
+                value = desc,
+                onValueChange = { onDescChange(it) },
+                label = { Text(text = stringResource(R.string.note), fontFamily = poppinsFamily) },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                stringResource(R.string.item_list),
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Bold
+            )
+
+            barangList.forEachIndexed { index, barang ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = barang.nama,
+                        onValueChange = {
+                            onBarangChange(index, barang.copy(nama = it))
+                        },
+                        label = {
+                            Text(
+                                stringResource(R.string.item_name),
+                                fontFamily = poppinsFamily
+                            )
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp)
+                    )
+                    OutlinedTextField(
+                        value = barang.harga,
+                        onValueChange = {
+                            onBarangChange(index, barang.copy(harga = it))
+                        },
+                        label = {
+                            Text(
+                                stringResource(R.string.price),
+                                fontFamily = poppinsFamily
+                            )
+                        },
+                        modifier = Modifier.width(100.dp)
+                    )
+                    IconButton(
+                        onClick = { onHapusBarang(index) }
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(R.string.delete)
+                        )
+                    }
+                }
+            }
+
+            Button(
+                onClick = onTambahBarang,
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text(stringResource(R.string.add_item), fontFamily = poppinsFamily)
+            }
         }
     }
 }
+
 
 
 @Composable

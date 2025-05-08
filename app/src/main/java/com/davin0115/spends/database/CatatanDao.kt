@@ -1,6 +1,7 @@
 package com.davin0115.spends.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -33,6 +34,9 @@ interface CatatanDao {
     // Update barang
     @Update
     suspend fun updateBarang(barang: Barang)
+
+    @Delete
+    suspend fun deleteBarang(barang: Barang)
 
     // Delete semua barang untuk catatan tertentu (optional)
     @Query("DELETE FROM barang WHERE catatanId = :catatanId")
