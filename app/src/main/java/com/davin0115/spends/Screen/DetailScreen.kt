@@ -122,21 +122,15 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                                 return@IconButton
                             }
 
-                            val total = barangList.sumOf { it.harga.toIntOrNull() ?: 0 }
-                            val catatan = buildString {
-                                appendLine("Daftar Belanja:")
-                                barangList.forEach {
-                                    appendLine("- ${it.nama}: Rp${it.harga}")
-                                }
-                                appendLine("Total: Rp$total")
-                            }
-
                             if (id == null) {
-                                viewModel.insert(judul, catatan)
+                                viewModel.insertWithBarangList(judul, catatan, barangList)
+
                             } else {
-                                // Update catatan dan barang
                                 viewModel.update(id, judul, catatan, barangList)
                             }
+
+
+
                             navController.popBackStack()
                         }) {
                             Icon(
@@ -145,8 +139,6 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                                 tint = Color.White
                             )
                         }
-
-
                         if (id != null) {
                             DeleteAction {
                                 viewModel.delete(id)
@@ -257,6 +249,16 @@ fun FormCatatan(
                 )
             }
         }
+
+        val totalHarga = barangList.sumOf { it.harga.toIntOrNull() ?: 0 }
+        Text(
+            text = "Total: Rp$totalHarga",
+            fontWeight = FontWeight.Bold,
+            fontFamily = poppinsFamily,
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(top = 8.dp)
+        )
 
         // Tombol tambah barang
         Button(

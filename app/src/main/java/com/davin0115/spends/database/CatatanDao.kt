@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface CatatanDao {
 
     @Insert
-    suspend fun insert(catatan: Catatan)
+    suspend fun insert(catatan: Catatan): Long
 
     @Update
     suspend fun  update(catatan: Catatan)

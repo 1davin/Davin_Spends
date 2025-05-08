@@ -29,6 +29,26 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
         }
     }
 
+    fun insertWithBarangList(judul: String, isi: String, barangList: List<BarangInput>) {
+        val catatan = Catatan(
+            tanggal = formatter.format(Date()),
+            judul = judul,
+            catatan = isi // ← langsung dari input user
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val newId = dao.insert(catatan)
+            val barangToInsert = barangList.map {
+                Barang(
+                    catatanId = newId,
+                    nama = it.nama,
+                    harga = it.harga.toIntOrNull() ?: 0
+                )
+            }
+            barangToInsert.forEach { dao.insertBarang(it) }
+        }
+    }
+
     // Fungsi untuk mengambil catatan berdasarkan ID
     suspend fun getCatatan(id: Long): Catatan? {
         return dao.getCatatanById(id)
