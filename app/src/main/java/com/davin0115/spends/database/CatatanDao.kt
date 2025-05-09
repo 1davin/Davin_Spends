@@ -18,9 +18,6 @@ interface CatatanDao {
     @Update
     suspend fun  update(catatan: Catatan)
 
-    @Query("SELECT * FROM catatan ORDER BY tanggal DESC")
-    fun getCatatan(): Flow<List<Catatan>>
-
     @Query("SELECT * FROM catatan WHERE id = :id")
     suspend fun getCatatanById(id: Long): Catatan?
 
@@ -41,5 +38,29 @@ interface CatatanDao {
 
     @Query("SELECT * FROM barang WHERE catatanId = :catatanId")
     suspend fun getBarangByCatatanId(catatanId: Long): List<Barang>
+
+    @Query("SELECT * FROM catatan WHERE isDeleted = 0 ORDER BY tanggal DESC")
+    fun getCatatan(): Flow<List<Catatan>>
+
+    // Get deleted items for recycle bin
+    @Query("SELECT * FROM catatan WHERE isDeleted = 1 ORDER BY tanggal DESC")
+    fun getDeletedCatatan(): Flow<List<Catatan>>
+
+    // Soft delete (move to recycle bin)
+    @Query("UPDATE catatan SET isDeleted = 1 WHERE id = :id")
+    suspend fun softDeleteById(id: Long)
+
+    // Restore from recycle bin
+    @Query("UPDATE catatan SET isDeleted = 0 WHERE id = :id")
+    suspend fun restoreById(id: Long)
+
+    // Permanently delete item
+    @Query("DELETE FROM catatan WHERE id = :id")
+    suspend fun permanentDeleteById(id: Long)
+
+    // Empty recycle bin (delete all soft-deleted items)
+    @Query("DELETE FROM catatan WHERE isDeleted = 1")
+    suspend fun emptyRecycleBin()
+
 
 }

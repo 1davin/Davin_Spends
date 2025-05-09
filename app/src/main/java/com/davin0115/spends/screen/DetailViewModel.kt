@@ -20,7 +20,8 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
         val catatan = Catatan(
             tanggal = formatter.format(Date()),
             judul = judul,
-            catatan = isi
+            catatan = isi,
+            isDeleted = false
         )
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,16 +42,19 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
     }
 
     fun update(id: Long, judul: String, isi: String, barangList: List<BarangInput>) {
-        val catatan = Catatan(
-            id = id,
-            tanggal = formatter.format(Date()),
-            judul = judul,
-            catatan = isi
-        )
-
         viewModelScope.launch(Dispatchers.IO) {
-            dao.update(catatan)
+            // Get the current note to preserve isDeleted status
+            val currentCatatan = dao.getCatatanById(id)
 
+            val catatan = Catatan(
+                id = id,
+                tanggal = formatter.format(Date()),
+                judul = judul,
+                catatan = isi,
+                isDeleted = currentCatatan?.isDeleted ?: false
+            )
+
+            dao.update(catatan)
             dao.deleteBarangByCatatanId(id)
 
             val barangToInsert = barangList.map {
@@ -64,15 +68,15 @@ class DetailViewModel(private val dao: CatatanDao) : ViewModel() {
             barangToInsert.forEach { dao.insertBarang(it) }
         }
     }
-    fun delete(id: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.deleteById(id)
-        }
-    }
+
     suspend fun getBarangList(catatanId: Long): List<Barang> {
         return dao.getBarangByCatatanId(catatanId)
     }
+
+    // Implement soft delete function
+    fun softDelete(id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.softDeleteById(id)
+        }
+    }
 }
-
-
-

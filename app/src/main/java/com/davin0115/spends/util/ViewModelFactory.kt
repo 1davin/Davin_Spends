@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.davin0115.spends.screen.DetailViewModel
 import com.davin0115.spends.screen.MainViewModel
+import com.davin0115.spends.screen.RecycleBinViewModel
 import com.davin0115.spends.database.CatatanDb
 
 class ViewModelFactory(
@@ -18,8 +19,9 @@ class ViewModelFactory(
                 MainViewModel(dao) as T
             modelClass.isAssignableFrom(DetailViewModel::class.java) ->
                 DetailViewModel(dao) as T
+            modelClass.isAssignableFrom(RecycleBinViewModel::class.java) ->
+                RecycleBinViewModel(dao) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }
-

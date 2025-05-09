@@ -20,12 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,16 +46,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.davin0115.spends.R
 import com.davin0115.spends.model.BarangInput
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
-import com.davin0115.spends.ui.theme.SpendsTheme
 import com.davin0115.spends.ui.theme.poppinsFamily
 import com.davin0115.spends.util.ViewModelFactory
 
@@ -187,10 +180,11 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             DisplayAlertDialog(
                 onDismissRequest = { showDialog = false }) {
                 showDialog = false
-                viewModel.delete(id)
+                viewModel.softDelete(id)
                 navController.popBackStack()
             }
         }
+
     }
 }
 

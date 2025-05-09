@@ -70,10 +70,14 @@ fun MainScreen(navController: NavHostController) {
     Scaffold (
         topBar = {
             GradientTopBarInfo(
-                title = stringResource(id = R.string.app_name),
+                title = "Judul",
                 showList = showList,
-                dataStore = dataStore
+                dataStore = dataStore,
+                onClick = {
+                    navController.navigate("binScreen")
+                }
             )
+
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -204,6 +208,7 @@ fun GradientTopBarInfo(
     title: String,
     showList: Boolean,
     dataStore: SettingsDataStore,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -256,8 +261,18 @@ fun GradientTopBarInfo(
                         tint = Color.White
                     )
                 }
+
+                // Tambahkan ikon baru di sini
+                IconButton(onClick = onClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_auto_delete_24),
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
 }
+
 

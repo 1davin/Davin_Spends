@@ -22,4 +22,14 @@
     <string name="delete_message">Delete this?</string>
     <string name="list">List view</string>
     <string name="grid">Grid view</string>
+    <string name="recycle_bin">Recycle Bin</string>
+    <string name="empty_bin">Empty Bin</string>
+    <string name="restore">Restore</string>
+    <string name="delete_permanently">Delete Permanently</string>
+    <string name="empty_bin_confirmation">Empty Recycle Bin?</string>
+    <string name="empty_bin_message">This will permanently delete all items in the recycle bin. This action cannot be undone.</string>
+    <string name="delete_confirmation">Delete Permanently?</string>
+    <string name="deletepermanent_message">This item will be permanently deleted and cannot be recovered.</string>
+    <string name="bin_empty">Recycle bin is empty</string>
+    <string name="cancel">Cancel</string>
 </resources>

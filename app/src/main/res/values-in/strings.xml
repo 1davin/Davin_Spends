@@ -11,6 +11,7 @@
     <string name="edit_note">Edit Catatan</string>
     <string name="save">Simpan</string>
     <string name="invalid">Judul dan catatan tidak boleh kosong</string>
+    <string name="cancel">Batal</string>
     <string name="delete">Hapus</string>
     <string name="more">Lainnya</string>
     <string name="add_item">Tambah barang</string>
@@ -20,7 +21,15 @@
     <string name="total_price">Total harga:  Rp. %1$d</string>
     <string name="delete_button">Hapus</string>
     <string name="cancel_button">Batal</string>
+    <string name="delete_confirmation">Hapus secara permanen?</string>
     <string name="delete_message">Hapus ini?</string>
     <string name="list">Tampilan list</string>
     <string name="grid">Tampilan grid</string>
+    <string name="recycle_bin">Tempat Sampah</string>
+    <string name="empty_bin">Sampah Kosong</string>
+    <string name="restore">Pulihkan</string>
+    <string name="delete_permanently">Hapus Permanen</string>
+    <string name="empty_bin_confirmation">Kosongkan Tempat Sampah?</string>
+    <string name="empty_bin_message">Ini akan menghapus permanen semua item di tempat sampah. Aksi ini tidak akan bisa dibatalkan.</string>
+    <string name="bin_empty">Tempat sampah kosong</string>
 </resources>
