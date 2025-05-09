@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.davin0115.spends.navigation.Screen.RecycleBinScreen
 import com.davin0115.spends.screen.DetailScreen
 import com.davin0115.spends.screen.KEY_ID_CATATAN
 import com.davin0115.spends.screen.MainScreen
