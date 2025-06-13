@@ -31,5 +31,7 @@
     <string name="delete_permanently">Hapus Permanen</string>
     <string name="empty_bin_confirmation">Kosongkan Tempat Sampah?</string>
     <string name="empty_bin_message">Ini akan menghapus permanen semua item di tempat sampah. Aksi ini tidak akan bisa dibatalkan.</string>
+    <string name="deletepermanent_message">Item ini akan terhapus permanen dan tidak bisa dikembalikan.</string>
     <string name="bin_empty">Tempat sampah kosong</string>
+    <string name="image">Gambar %1$s</string>
 </resources>

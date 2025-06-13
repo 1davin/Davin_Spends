@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -22,13 +26,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.davin0115.spends.R
+import com.davin0115.spends.model.Gallery
+import com.davin0115.spends.network.GalleryApi
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
 import com.davin0115.spends.ui.theme.poppinsFamily
@@ -49,9 +58,32 @@ fun GalleryScreen(navController: NavHostController) {
 
 @Composable
 fun GalleryContent(modifier: Modifier, navController: NavHostController){
-    val viewModel: MainViewModel = viewModel()
+    val viewModel: GalleryViewModel = viewModel()
+    val data by viewModel.data
+
+    LazyVerticalGrid(
+        modifier = modifier.fillMaxSize().padding(4.dp),
+        columns = GridCells.Fixed(2)
+    ) {
+        items(data) { ListGallery(gallery = it) }
+    }
 
 
+}
+
+@Composable
+fun ListGallery(gallery: Gallery) {
+    Box (
+
+    ){
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(GalleryApi.getGalleryUrl(gallery.gambar))
+                .crossfade(true)
+                .build(),
+            contentDescription = stringResource(R.string.image, gallery.judul)
+        )
+    }
 }
 
 @Composable

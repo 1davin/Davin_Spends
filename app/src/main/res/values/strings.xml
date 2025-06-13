@@ -32,4 +32,5 @@
     <string name="deletepermanent_message">This item will be permanently deleted and cannot be recovered.</string>
     <string name="bin_empty">Recycle bin is empty</string>
     <string name="cancel">Cancel</string>
+    <string name="image">Image %1$s</string>
 </resources>
