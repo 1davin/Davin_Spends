@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -121,19 +122,25 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = {
-                            if (judul.isBlank() || barangList.any { it.nama.isBlank() || it.harga.isBlank() }) {
-                                Toast.makeText(context, "Isi semua data barang!", Toast.LENGTH_LONG).show()
+                            // Filter out empty items before checking and saving
+                            val validBarangList = barangList.filter { it.nama.isNotBlank() && it.harga.isNotBlank() }
+
+                            if (judul.isBlank() || validBarangList.isEmpty()) {
+                                Toast.makeText(context, "Judul dan setidaknya satu barang tidak boleh kosong!", Toast.LENGTH_LONG).show()
+                                return@IconButton
+                            }
+
+                            // Validate that all prices are numbers
+                            if (validBarangList.any { it.harga.toIntOrNull() == null }) {
+                                Toast.makeText(context, "Harga barang harus berupa angka!", Toast.LENGTH_LONG).show()
                                 return@IconButton
                             }
 
                             if (id == null) {
-                                viewModel.insertWithBarangList(judul, catatan, barangList)
-
+                                viewModel.insertWithBarangList(judul, catatan, validBarangList)
                             } else {
-                                viewModel.update(id, judul, catatan, barangList)
+                                viewModel.update(id, judul, catatan, validBarangList)
                             }
-
-
 
                             navController.popBackStack()
                         }) {
@@ -255,10 +262,13 @@ fun FormCatatan(
                 )
                 OutlinedTextField(
                     value = barang.harga,
-                    onValueChange = {
-                        onBarangChange(index, barang.copy(harga = it))
+                    onValueChange = { newValue ->
+                        // Filter non-digit characters
+                        val filteredValue = newValue.filter { it.isDigit() }
+                        onBarangChange(index, barang.copy(harga = filteredValue))
                     },
                     label = { Text(stringResource(R.string.price), fontFamily = poppinsFamily) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // **Tambahkan ini**
                     modifier = Modifier.width(100.dp)
                 )
 

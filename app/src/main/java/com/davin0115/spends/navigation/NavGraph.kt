@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.davin0115.spends.screen.DetailScreen
+import com.davin0115.spends.screen.GalleryScreen
+import com.davin0115.spends.screen.HomeScreen
 import com.davin0115.spends.screen.KEY_ID_CATATAN
 import com.davin0115.spends.screen.MainScreen
 import com.davin0115.spends.screen.RecycleBinScreen
@@ -19,6 +21,14 @@ fun SetUpNavGraph(navController: NavHostController = rememberNavController()) {
         startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
+            HomeScreen(navController)
+        }
+
+        composable(route = Screen.Gallery.route) {
+            GalleryScreen(navController)
+        }
+
+        composable(route = Screen.Main.route) {
             MainScreen(navController)
         }
                composable(route = Screen.FormBaru.route) {

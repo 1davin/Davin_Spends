@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -70,12 +71,13 @@ fun MainScreen(navController: NavHostController) {
     Scaffold (
         topBar = {
             GradientTopBarInfo(
-                title = "Judul",
+                title = "Catatan",
                 showList = showList,
                 dataStore = dataStore,
                 onClick = {
                     navController.navigate("binScreen")
-                }
+                },
+                onBackClick = {navController.popBackStack()}
             )
 
         },
@@ -208,7 +210,8 @@ fun GradientTopBarInfo(
     title: String,
     showList: Boolean,
     dataStore: SettingsDataStore,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -236,13 +239,23 @@ fun GradientTopBarInfo(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = title,
-                color = Color.White,
-                fontFamily = poppinsFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back), // Pastikan Anda memiliki string resource "back"
+                        tint = Color.White
+                    )
+                }
+                Text( // Tetap tampilkan judul di samping ikon kembali
+                    text = title,
+                    color = Color.White,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(start = 8.dp) // Tambahkan padding sedikit
+                )
+            }
 
             Row {
                 IconButton(onClick = {
