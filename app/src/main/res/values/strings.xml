@@ -38,4 +38,7 @@
     <string name="profile">Profile</string>
     <string name="close">Close</string>
     <string name="logout">Log Out</string>
+    <string name="add_photo">Add photo</string>
+    <string name="photo_title">Photo Title</string>
+    <string name="desc">Description</string>
 </resources>

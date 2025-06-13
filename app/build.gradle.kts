@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.android
 import java.util.Properties
 
 plugins {
@@ -73,6 +74,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.android.image.cropper)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

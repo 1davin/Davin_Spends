@@ -28,7 +28,7 @@ class GalleryViewModel() : ViewModel(){
                 data.value = GalleryApi.service.getGallery()
                 status.value = ApiStatus.SUCCESS
             } catch (e: Exception) {
-                Log.d("MainViewModel", "Failure: ${e.message}")
+                Log.d("GalleryViewModel", "Failure: ${e.message}")
                 status.value = ApiStatus.FAILED
             }
         }

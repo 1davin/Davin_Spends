@@ -29,7 +29,7 @@ object GalleryApi {
     }
 
     fun getGalleryUrl(gambar: String): String {
-        return "${BASE_URL}gambar?id=$gambar"
+        return "${BASE_URL}image?id=$gambar"
     }
 }
 
