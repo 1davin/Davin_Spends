@@ -37,4 +37,6 @@
     <string name="error">Gagal memuat data.. Koneksi error.</string>
     <string name="try_again">Coba lagi</string>
     <string name="profile">Profil</string>
+    <string name="close">Tutup</string>
+    <string name="logout">Log Out</string>
 </resources>
