@@ -6,6 +6,7 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -67,6 +69,8 @@ import com.davin0115.spends.network.GalleryApi
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
 import com.davin0115.spends.ui.theme.poppinsFamily
+import com.davin0115.spends.model.User
+import com.davin0115.spends.network.UserDataStore
 
 @Composable
 fun GalleryScreen(navController: NavHostController) {
@@ -78,6 +82,12 @@ fun GalleryScreen(navController: NavHostController) {
         bitmap = getCroppedImage(context.contentResolver, it)
         if (bitmap != null) showGalleryDialog = true
     }
+
+    val dataStore = UserDataStore(context)
+    val user by dataStore.userFlow.collectAsState(User())
+    val viewModel: GalleryViewModel = viewModel()
+    val errorMessage by viewModel.errorMessage
+
     Scaffold (
         topBar = {
             GradientTopBarGallery(
@@ -103,22 +113,25 @@ fun GalleryScreen(navController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        GalleryContent(Modifier.padding(innerPadding), navController)
+        GalleryContent(viewModel, Modifier.padding(innerPadding), navController)
 
         if (showGalleryDialog) {
             GalleryDialog(
                 bitmap = bitmap,
                 onDismissRequest = { showGalleryDialog = false }) { judul, keterangan ->
-                Log.d("TAMBAH", "$judul $keterangan ditambahkan.")
                 showGalleryDialog = false
+                viewModel.saveData(user.email, judul, keterangan, bitmap!!)
             }
+        }
+        if (errorMessage != null) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 }
 
 @Composable
-fun GalleryContent(modifier: Modifier, navController: NavHostController){
-    val viewModel: GalleryViewModel = viewModel()
+fun GalleryContent(viewModel: GalleryViewModel, modifier: Modifier, navController: NavHostController){
     val data by viewModel.data
     val status by viewModel.status.collectAsState()
 
