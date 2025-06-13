@@ -32,3 +32,5 @@ object GalleryApi {
         return "$BASE_URL$gambar.jpg"
     }
 }
+
+enum class ApiStatus { LOADING, SUCCESS }
