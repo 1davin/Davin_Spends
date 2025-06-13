@@ -22,20 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.davin0115.spends.R
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
 import com.davin0115.spends.ui.theme.poppinsFamily
-import com.davin0115.spends.util.SettingsDataStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun GalleryScreen(navController: NavHostController) {
@@ -53,6 +49,8 @@ fun GalleryScreen(navController: NavHostController) {
 
 @Composable
 fun GalleryContent(modifier: Modifier, navController: NavHostController){
+    val viewModel: MainViewModel = viewModel()
+
 
 }
 
