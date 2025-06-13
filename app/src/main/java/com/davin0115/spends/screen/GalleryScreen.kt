@@ -1,8 +1,10 @@
 package com.davin0115.spends.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -26,8 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,15 +78,36 @@ fun GalleryContent(modifier: Modifier, navController: NavHostController){
 @Composable
 fun ListGallery(gallery: Gallery) {
     Box (
-
+        modifier = Modifier.padding(4.dp).border(1.dp, Color.Gray),
+        contentAlignment = Alignment.BottomCenter
     ){
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(GalleryApi.getGalleryUrl(gallery.gambar))
                 .crossfade(true)
                 .build(),
-            contentDescription = stringResource(R.string.image, gallery.judul)
+            contentDescription = stringResource(R.string.image, gallery.judul),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth().padding(4.dp)
         )
+        Column (
+            modifier = Modifier.fillMaxWidth().padding(4.dp)
+                .background(Color(red = 0f, green = 0f, blue = 0f, alpha = 0.5f))
+        ){
+            Text(
+                text = gallery.judul,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontFamily = poppinsFamily
+            )
+            Text(
+                text = gallery.keterangan,
+                fontStyle = FontStyle.Italic,
+                fontSize = 14.sp,
+                color = Color.White,
+                fontFamily = poppinsFamily
+            )
+        }
     }
 }
 
