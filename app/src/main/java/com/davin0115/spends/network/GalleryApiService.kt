@@ -45,15 +45,15 @@ interface GalleryApiService {
     ): OpStatus
 
     @Multipart
-    @POST("spends/{id}")
+    @POST("spends")
     suspend fun updateGallery(
-        @Header("Authorization") userId: String,
-        @Path("id") id: String,
+        @Header("Authorization") email: String,
+        @Query("id") id: String,
         @Part("_method") method: RequestBody,
         @Part("judul") judul: RequestBody,
         @Part("keterangan") keterangan: RequestBody,
-        @Part image: MultipartBody.Part? = null
-    ): OpStatus
+        @Part image: MultipartBody.Part?
+    ): Gallery
 
     @DELETE("spends")
     suspend fun deleteGallery(

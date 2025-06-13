@@ -78,7 +78,7 @@ class GalleryViewModel() : ViewModel(){
     }
 
     fun updateData(
-        userId: String,
+        email: String,
         id: String,
         judul: String,
         keterangan: String,
@@ -87,21 +87,17 @@ class GalleryViewModel() : ViewModel(){
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val imagePart = bitmap?.toMultipartBody()
-
+                val methodPart = "PUT".toRequestBody("text/plain".toMediaTypeOrNull())
                 val result = GalleryApi.service.updateGallery (
-                    userId,
+                    email,
                     id,
-                    "PUT".toRequestBody("text/plain".toMediaTypeOrNull()),
+                    methodPart,
                     judul.toRequestBody("text/plain".toMediaTypeOrNull()),
                     keterangan.toRequestBody("text/plain".toMediaTypeOrNull()),
                     imagePart
                 )
+                retrieveData(email)
 
-                if (result.status == "success") {
-                    retrieveData(userId)
-                } else {
-                    throw Exception(result.message)
-                }
             } catch (e: Exception) {
                 Log.d("GalleryViewModel", "Failure updating: ${e.message}")
                 errorMessage.value = "Error updating: ${e.message}"

@@ -38,6 +38,7 @@ import com.canhub.cropper.CropImageOptions
 import com.davin0115.spends.R
 import com.davin0115.spends.model.Gallery
 import com.davin0115.spends.network.GalleryApi
+import com.davin0115.spends.ui.theme.poppinsFamily
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,19 +62,28 @@ fun UpdateGalleryDialog(
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = "Edit Gallery Item") },
+        title = { Text(
+            text = "Edit Gallery Item",
+            fontFamily = poppinsFamily
+        ) },
         text = {
             Column {
                 TextField(
                     value = judul,
                     onValueChange = { judul = it },
-                    label = { Text("Judul") },
+                    label = { Text(
+                        text = "Judul",
+                        fontFamily = poppinsFamily
+                    ) },
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
                 )
                 TextField(
                     value = keterangan,
                     onValueChange = { keterangan = it },
-                    label = { Text("Keterangan") },
+                    label = { Text(
+                        text = "Keterangan",
+                        fontFamily = poppinsFamily
+                    ) },
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
                 )
                 Row(
@@ -84,14 +94,17 @@ fun UpdateGalleryDialog(
                     TextButton(onClick = {
                         val options = CropImageContractOptions(
                             null, CropImageOptions(
-                                imageSourceIncludeGallery = true, // Izinkan pilih dari galeri
+                                imageSourceIncludeGallery = true,
                                 imageSourceIncludeCamera = true,
                                 fixAspectRatio = true
                             )
                         )
                         launcher.launch(options)
                     }) {
-                        Text("Change Image")
+                        Text(
+                            text = "Change Image",
+                            fontFamily = poppinsFamily
+                        )
                     }
                     if (newBitmap != null) {
                         Image(
@@ -100,7 +113,6 @@ fun UpdateGalleryDialog(
                             modifier = Modifier.size(64.dp)
                         )
                     } else {
-                        // Tampilkan gambar lama jika tidak ada gambar baru yang dipilih
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(GalleryApi.getGalleryUrl(initialGallery.gambar))
@@ -125,19 +137,29 @@ fun UpdateGalleryDialog(
                     onDelete(initialGallery.id)
                     onDismissRequest()
                 }) {
-                    Text("Delete", color = Color.Red)
+                    Text(
+                        text = "Delete",
+                        fontFamily = poppinsFamily,
+                        color = Color.Red
+                    )
                 }
                 TextButton(onClick = {
                     onUpdate(initialGallery.id, judul, keterangan, newBitmap)
                     onDismissRequest()
                 }) {
-                    Text("Update")
+                    Text(
+                        text = "Update",
+                        fontFamily = poppinsFamily
+                    )
                 }
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("Cancel")
+                Text(
+                    text = "Cancel",
+                    fontFamily = poppinsFamily
+                )
             }
         }
     )
