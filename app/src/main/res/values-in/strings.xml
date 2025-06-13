@@ -42,4 +42,6 @@
     <string name="add_photo">Tambah foto</string>
     <string name="photo_title">Judul photo</string>
     <string name="desc">Deskripsi</string>
+    <string name="edit_photo">Edit foto</string>
+    <string name="delete_photo">Hapus foto</string>
 </resources>

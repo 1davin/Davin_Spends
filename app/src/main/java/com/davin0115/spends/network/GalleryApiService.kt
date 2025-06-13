@@ -5,15 +5,18 @@ import com.davin0115.spends.model.OpStatus
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.MultipartBody
-import okhttp3.Request
 import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://spends-api.bagasaldianata.my.id/api/"
 
@@ -28,7 +31,9 @@ private val retrofit = Retrofit.Builder()
 
 interface GalleryApiService {
     @GET("spends")
-    suspend fun getGallery( ): List<Gallery>
+    suspend fun getGallery(
+            @Header("Authorization") userId: String
+    ): List<Gallery>
 
     @Multipart
     @POST("spends")
@@ -36,7 +41,24 @@ interface GalleryApiService {
         @Header("Authorization") userId: String,
         @Part("judul") judul: RequestBody,
         @Part("keterangan") keterangan: RequestBody,
-        @Part gambar: MultipartBody.Part
+        @Part image: MultipartBody.Part
+    ): OpStatus
+
+    @Multipart
+    @POST("spends/{id}")
+    suspend fun updateGallery(
+        @Header("Authorization") userId: String,
+        @Path("id") id: String,
+        @Part("_method") method: RequestBody,
+        @Part("judul") judul: RequestBody,
+        @Part("keterangan") keterangan: RequestBody,
+        @Part image: MultipartBody.Part? = null
+    ): OpStatus
+
+    @DELETE("spends")
+    suspend fun deleteGallery(
+        @Header("Authorization") userId: String,
+        @Query("id") id: String // Gunakan Query untuk ID saat delete
     ): OpStatus
 }
 

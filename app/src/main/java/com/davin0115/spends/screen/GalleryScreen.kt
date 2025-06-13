@@ -1,6 +1,7 @@
 package com.davin0115.spends.screen
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
@@ -27,7 +28,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
@@ -36,6 +39,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +57,13 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.dataStore
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.ClearCredentialException
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -62,21 +72,30 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
+import com.davin0115.spends.BuildConfig
 import com.davin0115.spends.R
 import com.davin0115.spends.model.Gallery
+import com.davin0115.spends.model.User
 import com.davin0115.spends.network.ApiStatus
 import com.davin0115.spends.network.GalleryApi
+import com.davin0115.spends.network.UserDataStore
 import com.davin0115.spends.ui.theme.MainColor
 import com.davin0115.spends.ui.theme.SecondColor
 import com.davin0115.spends.ui.theme.poppinsFamily
-import com.davin0115.spends.model.User
-import com.davin0115.spends.network.UserDataStore
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun GalleryScreen(navController: NavHostController) {
     var showGalleryDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
+    var showDialog by remember { mutableStateOf(false) }
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
     val launcher = rememberLauncherForActivityResult(CropImageContract()) {
         bitmap = getCroppedImage(context.contentResolver, it)
@@ -92,7 +111,14 @@ fun GalleryScreen(navController: NavHostController) {
         topBar = {
             GradientTopBarGallery(
                 title = "Gallery",
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onProfileClick = {
+                    if (user.email.isEmpty()) {
+                        CoroutineScope(Dispatchers.IO).launch { signIn(context, dataStore) }
+                    } else {
+                        showDialog = true
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -113,7 +139,16 @@ fun GalleryScreen(navController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        GalleryContent(viewModel, Modifier.padding(innerPadding), navController)
+        GalleryContent(viewModel, user.email, Modifier.padding(innerPadding))
+
+        if (showDialog) {
+            ProfilDialog(
+                user = user,
+                onDismissRequest = { showDialog = false }) {
+                CoroutineScope(Dispatchers.IO).launch{ signOut(context, dataStore) }
+                showDialog = false
+            }
+        }
 
         if (showGalleryDialog) {
             GalleryDialog(
@@ -131,9 +166,20 @@ fun GalleryScreen(navController: NavHostController) {
 }
 
 @Composable
-fun GalleryContent(viewModel: GalleryViewModel, modifier: Modifier, navController: NavHostController){
+fun GalleryContent(
+    viewModel: GalleryViewModel,
+    userId: String, modifier: Modifier
+){
     val data by viewModel.data
     val status by viewModel.status.collectAsState()
+
+    var showUpdateDialog by remember { mutableStateOf(false) }
+    var selectedGalleryItem by remember { mutableStateOf<Gallery?>(null) }
+    var updateBitmap: Bitmap? by remember { mutableStateOf(null) } // Bitmap untuk update
+
+    LaunchedEffect(userId) {
+        viewModel.retrieveData(userId)
+    }
 
     when (status) {
         ApiStatus.LOADING ->  {
@@ -151,7 +197,15 @@ fun GalleryContent(viewModel: GalleryViewModel, modifier: Modifier, navControlle
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
-                items(data) { ListGallery(gallery = it) }
+                items(data) { galleryItem -> // Ganti 'it' menjadi 'galleryItem'
+                    ListGallery(
+                        gallery = galleryItem,
+                        onEditClick = {
+                            selectedGalleryItem = galleryItem
+                            showUpdateDialog = true
+                        }
+                    )
+                }
             }
         }
 
@@ -163,7 +217,7 @@ fun GalleryContent(viewModel: GalleryViewModel, modifier: Modifier, navControlle
             ){
                 Text(text = stringResource(id = R.string.error))
                 Button(
-                    onClick = { viewModel.retrieveData() },
+                    onClick = { viewModel.retrieveData(userId) },
                     modifier = Modifier.padding(top = 16.dp),
                     contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
                 ) {
@@ -172,10 +226,32 @@ fun GalleryContent(viewModel: GalleryViewModel, modifier: Modifier, navControlle
             }
         }
     }
+    if (showUpdateDialog && selectedGalleryItem != null) {
+        UpdateGalleryDialog(
+            initialGallery = selectedGalleryItem!!,
+            onDismissRequest = {
+                showUpdateDialog = false
+                selectedGalleryItem = null
+                updateBitmap = null // Reset bitmap update
+            },
+            onUpdate = { id, judul, keterangan, bitmap ->
+                viewModel.updateData(userId, id, judul, keterangan, bitmap)
+            },
+            onDelete = { id ->
+                viewModel.deleteData(userId, id)
+            },
+            onImageSelected = { bitmap ->
+                updateBitmap = bitmap
+            }
+        )
+    }
 }
 
 @Composable
-fun ListGallery(gallery: Gallery) {
+fun ListGallery(
+    gallery: Gallery,
+    onEditClick: (Gallery) -> Unit
+) {
     Box (
         modifier = Modifier.padding(4.dp).border(1.dp, Color.Gray),
         contentAlignment = Alignment.BottomCenter
@@ -208,6 +284,18 @@ fun ListGallery(gallery: Gallery) {
                 color = Color.White,
                 fontFamily = poppinsFamily
             )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = { onEditClick(gallery) }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        tint = Color.White
+                    )
+                }
+            }
         }
     }
 }
@@ -215,7 +303,8 @@ fun ListGallery(gallery: Gallery) {
 @Composable
 fun GradientTopBarGallery(
     title: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -241,8 +330,9 @@ fun GradientTopBarGallery(
                     end = 16.dp
                 ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween // This keeps the items spaced out
         ) {
+            // Left side: Back button and Title
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onBackClick) {
                     Icon(
@@ -260,11 +350,71 @@ fun GradientTopBarGallery(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
+
+            IconButton(onClick = onProfileClick) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.profile),
+                    tint = Color.White
+                )
+            }
         }
     }
 }
 
-private fun getCroppedImage(
+private suspend fun signIn(context: Context, dataStore: UserDataStore) {
+    val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+        .setFilterByAuthorizedAccounts(false)
+        .setServerClientId(BuildConfig.API_KEY)
+        .build()
+
+    val request: GetCredentialRequest = GetCredentialRequest.Builder()
+        .addCredentialOption(googleIdOption)
+        .build()
+
+    try {
+        val credentialManager = CredentialManager.create(context)
+        val result = credentialManager.getCredential(context, request)
+        handleSignIn(result, dataStore)
+    } catch (e: GetCredentialException) {
+        Log.e("SIGN-IN", "Error: ${e.errorMessage}")
+    }
+}
+
+private suspend fun handleSignIn(
+    result: GetCredentialResponse,
+    dataStore: UserDataStore) {
+    val credential = result.credential
+    if (credential is CustomCredential &&
+        credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+        try {
+            val googleId = GoogleIdTokenCredential.createFrom(credential.data)
+            val nama = googleId.displayName ?: ""
+            val email = googleId.id
+            val photoUrl = googleId.profilePictureUri.toString()
+            dataStore.saveData(User(nama, email, photoUrl))
+        } catch (e: GoogleIdTokenParsingException) {
+            Log.e("SIGN-IN", "Error: ${e.message}")
+        }
+    }
+    else {
+        Log.e("SIGN-IN", "Error: unrecognized custom credential type.")
+    }
+}
+
+private suspend fun signOut(context: Context, dataStore: UserDataStore) {
+    try {
+        val credentialManager = CredentialManager.create(context)
+        credentialManager.clearCredentialState(
+            ClearCredentialStateRequest()
+        )
+        dataStore.saveData(User())
+    } catch (e: ClearCredentialException) {
+        Log.e("SIGN-IN", "Error: ${e.errorMessage   }")
+    }
+}
+
+fun getCroppedImage(
     resolver : ContentResolver,
     result: CropImageView.CropResult
 ): Bitmap? {

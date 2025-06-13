@@ -1,3 +1,5 @@
+package com.davin0115.spends.screen
+
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -25,15 +27,11 @@ class GalleryViewModel() : ViewModel(){
     var errorMessage = mutableStateOf<String?>(null)
         private set
 
-    init {
-        retrieveData()
-    }
-
-    fun retrieveData(){
+    fun retrieveData(userId: String){
         viewModelScope.launch(Dispatchers.IO) {
             status.value = ApiStatus.LOADING
             try {
-                data.value = GalleryApi.service.getGallery()
+                data.value = GalleryApi.service.getGallery(userId)
                 status.value = ApiStatus.SUCCESS
             } catch (e: Exception) {
                 Log.d("GalleryViewModel", "Failure: ${e.message}")
@@ -50,11 +48,15 @@ class GalleryViewModel() : ViewModel(){
         val requestBody = byteArray.toRequestBody(
             "image/jpg".toMediaTypeOrNull(), 0, byteArray.size)
         return MultipartBody.Part.createFormData(
-            "image", "image.jpg", requestBody
+            "gambar", "image.jpg", requestBody
         )
     }
 
-    fun saveData(userId: String, judul: String, keterangan: String, bitmap: Bitmap) {
+    fun saveData(
+        userId: String,
+        judul: String,
+        keterangan: String,
+        bitmap: Bitmap) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = GalleryApi.service.postGallery (
@@ -65,7 +67,7 @@ class GalleryViewModel() : ViewModel(){
                 )
 
                 if (result.status == "success")
-                    retrieveData()
+                    retrieveData(userId)
                 else
                     throw Exception(result.message)
             } catch (e: Exception) {
@@ -75,6 +77,54 @@ class GalleryViewModel() : ViewModel(){
         }
     }
 
-    fun clearMessage() { errorMessage.value = null }
+    fun updateData(
+        userId: String,
+        id: String,
+        judul: String,
+        keterangan: String,
+        bitmap: Bitmap? = null
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val imagePart = bitmap?.toMultipartBody()
 
+                val result = GalleryApi.service.updateGallery (
+                    userId,
+                    id,
+                    "PUT".toRequestBody("text/plain".toMediaTypeOrNull()),
+                    judul.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    keterangan.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    imagePart
+                )
+
+                if (result.status == "success") {
+                    retrieveData(userId)
+                } else {
+                    throw Exception(result.message)
+                }
+            } catch (e: Exception) {
+                Log.d("GalleryViewModel", "Failure updating: ${e.message}")
+                errorMessage.value = "Error updating: ${e.message}"
+            }
+        }
+    }
+
+    fun deleteData(userId: String, id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = GalleryApi.service.deleteGallery(userId, id)
+
+                if (result.status == "success") {
+                    retrieveData(userId) // Refresh data setelah delete
+                } else {
+                    throw Exception(result.message)
+                }
+            } catch (e: Exception) {
+                Log.d("GalleryViewModel", "Failure deleting: ${e.message}")
+                errorMessage.value = "Error deleting: ${e.message}"
+            }
+        }
+    }
+
+    fun clearMessage() { errorMessage.value = null }
 }

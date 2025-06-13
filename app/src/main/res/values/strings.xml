@@ -41,4 +41,6 @@
     <string name="add_photo">Add photo</string>
     <string name="photo_title">Photo Title</string>
     <string name="desc">Description</string>
-</resources>
+    <string name="edit_photo">Edit photo</string>
+    <string name="delete_photo">Delete photo</string>
+]</resources>
