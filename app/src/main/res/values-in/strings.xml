@@ -34,4 +34,6 @@
     <string name="deletepermanent_message">Item ini akan terhapus permanen dan tidak bisa dikembalikan.</string>
     <string name="bin_empty">Tempat sampah kosong</string>
     <string name="image">Gambar %1$s</string>
+    <string name="error">Gagal memuat data.. Koneksi error.</string>
+    <string name="try_again">Coba lagi</string>
 </resources>

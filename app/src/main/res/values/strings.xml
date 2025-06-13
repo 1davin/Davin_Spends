@@ -33,4 +33,6 @@
     <string name="bin_empty">Recycle bin is empty</string>
     <string name="cancel">Cancel</string>
     <string name="image">Image %1$s</string>
+    <string name="error">Failed to load data.. Connection error.</string>
+    <string name="try_again">Try again</string>
 </resources>
