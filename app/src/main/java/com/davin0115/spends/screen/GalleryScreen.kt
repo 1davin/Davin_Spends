@@ -117,6 +117,7 @@ fun GalleryScreen(navController: NavHostController) {
                         CoroutineScope(Dispatchers.IO).launch { signIn(context, dataStore) }
                     } else {
                         showDialog = true
+
                     }
                 }
             )
